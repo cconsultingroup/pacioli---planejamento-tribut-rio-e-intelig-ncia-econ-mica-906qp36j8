@@ -16,8 +16,8 @@ routerAdd('POST', '/backend/v1/empresas/importar', (e) => {
   }
   const situacaoPadrao = b.situacao === 'inativa' ? 'inativa' : 'ativa'
   let procuracao = ''
-  if (b.procuracao === true) procuracao = 'sim'
-  if (b.procuracao === false) procuracao = 'nao'
+  if (b.procuracao === true || b.procuracao === 'sim') procuracao = 'sim'
+  if (b.procuracao === false || b.procuracao === 'nao') procuracao = 'nao'
   const validade =
     typeof b.procuracao_validade === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(b.procuracao_validade)
       ? b.procuracao_validade
