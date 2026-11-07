@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T21:54:39.070Z",
+  "generatedAt": "2026-11-07T22:03:29.751Z",
   "collections": [
     {
       "name": "users",
@@ -113,9 +113,28 @@
           "required": false,
           "system": false,
           "autodateTriggers": ["onCreate", "onUpdate"]
+        },
+        {
+          "name": "regime_tributacao",
+          "type": "select",
+          "required": false,
+          "system": false,
+          "selectValues": ["simples_nacional", "lucro_presumido", "lucro_real", "nao_informado"]
+        },
+        {
+          "name": "vendedor_responsavel",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "cadastrado_em",
+          "type": "date",
+          "required": false,
+          "system": false
         }
       ],
-      "indexes": ["CREATE UNIQUE INDEX idx_empresas_cnpj ON empresas (cnpj)"]
+      "indexes": ["CREATE UNIQUE INDEX `idx_empresas_cnpj` ON `empresas` (cnpj) WHERE cnpj != ''"]
     }
   ]
 }

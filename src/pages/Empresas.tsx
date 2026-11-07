@@ -9,12 +9,22 @@ type Empresa = {
   cnpj: string
   nome: string
   situacao: string
+  regime_tributacao?: string
   procuracao: string
   procuracao_validade: string
+  vendedor_responsavel?: string
+  cadastrado_em?: string
+  observacao?: string
   created: string
 }
 
 const ROTULO_PROCURACAO: Record<string, string> = { sim: 'Tem', nao: 'Não tem' }
+const ROTULO_REGIME: Record<string, string> = {
+  simples_nacional: 'Simples Nacional',
+  lucro_presumido: 'Lucro Presumido',
+  lucro_real: 'Lucro Real',
+  nao_informado: 'Não informado',
+}
 
 const OPCOES_PROCURACAO = [
   ['sim', 'Com procuração'],
@@ -79,13 +89,14 @@ export default function Empresas() {
       const r = await pb.send<{
         novas: number
         atualizadas: number
-        invalidas: { linha: number; conteudo: string }[]
+        invalidas: { linha: number; conteudo: string; erro?: string }[]
       }>('/backend/v1/empresas/importar', {
         method: 'POST',
         body: {
+          itens: previa?.itens ?? [],
           texto: previa?.texto ?? '',
           situacao,
-          procuracao: procuracao === '' ? null : procuracao === 'sim',
+          procuracao: procuracao === '' ? null : procuracao,
           procuracao_validade: validade || null,
         },
       })
@@ -230,24 +241,58 @@ export default function Empresas() {
             <thead className="bg-muted/50 text-left">
               <tr>
                 <th className="px-3 py-2 font-medium">CNPJ</th>
-                <th className="px-3 py-2 font-medium">Nome</th>
+                <th className="px-3 py-2 font-medium">Nome / Razão social</th>
+                <th className="px-3 py-2 font-medium">Regime</th>
                 <th className="px-3 py-2 font-medium">Situação</th>
                 <th className="px-3 py-2 font-medium">Procuração</th>
+                <th className="px-3 py-2 font-medium">Vendedor</th>
                 <th className="px-3 py-2 font-medium">Cadastrada em</th>
               </tr>
             </thead>
             <tbody>
-              {filtradas.map((e) => (
-                <tr key={e.id} className="border-t">
-                  <td className="px-3 py-2 font-mono">{cnpjFmt(e.cnpj)}</td>
-                  <td className="px-3 py-2">
-                    {e.nome || <span className="text-muted-foreground">(sem nome)</span>}
-                  </td>
-                  <td className="px-3 py-2">{e.situacao ? e.situacao.toUpperCase() : '-'}</td>
-                  <td className="px-3 py-2">{ROTULO_PROCURACAO[e.procuracao] ?? '-'}</td>
-                  <td className="px-3 py-2">{e.created ? e.created.slice(0, 10) : '-'}</td>
-                </tr>
-              ))}
+              {filtradas.map((e) => {
+                const procTexto =
+                  e.procuracao === 'sim'
+                    ? e.procuracao_validade
+                      ? `Sim (val. ${e.procuracao_validade.slice(0, 10)})`
+                      : 'Sim'
+                    : e.procuracao === 'nao'
+                      ? 'Não tem'
+                      : '-'
+
+                const dataCadastro = e.cadastrado_em
+                  ? e.cadastrado_em.slice(0, 10)
+                  : e.created
+                    ? e.created.slice(0, 10)
+                    : '-'
+
+                return (
+                  <tr key={e.id} className="border-t">
+                    <td className="px-3 py-2 font-mono">{cnpjFmt(e.cnpj)}</td>
+                    <td className="px-3 py-2">
+                      <div className="font-medium">
+                        {e.nome || <span className="text-muted-foreground">(sem nome)</span>}
+                      </div>
+                      {e.observacao && (
+                        <div className="text-xs text-muted-foreground line-clamp-1">
+                          {e.observacao}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-3 py-2">
+                      {e.regime_tributacao
+                        ? (ROTULO_REGIME[e.regime_tributacao] ?? e.regime_tributacao)
+                        : '-'}
+                    </td>
+                    <td className="px-3 py-2">{e.situacao ? e.situacao.toUpperCase() : '-'}</td>
+                    <td className="px-3 py-2">{procTexto}</td>
+                    <td className="px-3 py-2 text-muted-foreground">
+                      {e.vendedor_responsavel || '-'}
+                    </td>
+                    <td className="px-3 py-2">{dataCadastro}</td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
