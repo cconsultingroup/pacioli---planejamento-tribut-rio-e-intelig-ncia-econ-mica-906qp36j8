@@ -26,7 +26,7 @@ export default function Empresas() {
   const [painel, setPainel] = useState(false)
   const [previa, setPrevia] = useState<Previa | null>(null)
   const [nomeArquivo, setNomeArquivo] = useState('')
-  const [procuracao, setProcuracao] = useState('sim')
+  const [procuracao, setProcuracao] = useState('')
   const [validade, setValidade] = useState('')
   const [situacao, setSituacao] = useState('ativa')
   const [enviando, setEnviando] = useState(false)
