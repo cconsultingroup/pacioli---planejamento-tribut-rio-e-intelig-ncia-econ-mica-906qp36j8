@@ -31,7 +31,8 @@ export default function Empresas() {
   const [previa, setPrevia] = useState<Previa | null>(null)
   const [nomeArquivo, setNomeArquivo] = useState('')
   // procuracao: 'sim' = marcar todas como com procuração, 'nao' = sem procuração, '' = não informar
-  const [procuracao, setProcuracao] = useState<'' | 'sim' | 'nao'>('sim')
+  // Nenhum campo é obrigatório: o padrão é não informar nada.
+  const [procuracao, setProcuracao] = useState<'' | 'sim' | 'nao'>('')
   const [validade, setValidade] = useState('')
   const [situacao, setSituacao] = useState('ativa')
   const [enviando, setEnviando] = useState(false)
@@ -71,7 +72,6 @@ export default function Empresas() {
   }
 
   const importar = async () => {
-    if (!previa) return
     setEnviando(true)
     setResultado('')
     setErro('')
@@ -83,10 +83,10 @@ export default function Empresas() {
       }>('/backend/v1/empresas/importar', {
         method: 'POST',
         body: {
-          texto: previa.texto,
+          texto: previa?.texto ?? '',
           situacao,
           procuracao: procuracao === '' ? null : procuracao === 'sim',
-          procuracao_validade: procuracao === '' ? null : validade || null,
+          procuracao_validade: validade || null,
         },
       })
       setResultado(
@@ -134,25 +134,22 @@ export default function Empresas() {
             <h2 className="font-medium">Importar lista de empresas</h2>
             <p className="text-sm text-muted-foreground">
               Envie uma planilha Excel (.xlsx) ou CSV com as colunas <code>CNPJ</code>,{' '}
-              <code>Nome</code> e <code>Situação</code> (ATIVA ou INATIVA; a situação é opcional).
-              Quem já está no cadastro é atualizado, sem apagar o que já havia. Escolha abaixo se
-              todas as empresas importadas ficam com ou sem procuração.
+              <code>Nome</code> e <code>Situação</code> (nenhum campo é obrigatório). Quem já está
+              no cadastro é atualizado, sem apagar o que já havia. Escolha abaixo se todas as
+              empresas importadas ficam com ou sem procuração (opcional).
             </p>
           </div>
           <input
             type="file"
             accept=".xlsx,.csv,.txt"
-            aria-label="Planilha de empresas"
+            aria-label="Planilha de empresas (opcional)"
             onChange={(e) => void escolherArquivo(e.target.files?.[0] ?? null)}
             className="block text-sm"
           />
           {previa && (
             <p className="text-sm">
-              <strong>{nomeArquivo}</strong>: {previa.validas} empresa(s) válida(s)
-              {previa.ignoradas
-                ? `, ${previa.ignoradas} linha(s) sem CNPJ de 14 dígitos (ignorada(s))`
-                : ''}
-              .
+              <strong>{nomeArquivo}</strong>: {previa.validas} empresa(s) encontrada(s)
+              {previa.ignoradas ? `, ${previa.ignoradas} linha(s) em branco (ignorada(s))` : ''}.
             </p>
           )}
           <fieldset className="space-y-2">
@@ -183,26 +180,24 @@ export default function Empresas() {
                 className="block w-40 rounded-md border border-input bg-background px-3 py-2 text-sm"
                 value={validade}
                 onChange={(e) => setValidade(e.target.value)}
-                disabled={procuracao === ''}
-                aria-disabled={procuracao === ''}
               />
             </label>
             <label className="space-y-1 text-sm font-medium">
-              <span>Situação padrão (sem ATIVA/INATIVA na linha)</span>
+              <span>Situação padrão (opcional)</span>
               <select
                 className="block w-40 rounded-md border border-input bg-background px-3 py-2 text-sm"
                 value={situacao}
                 onChange={(e) => setSituacao(e.target.value)}
               >
+                <option value="">Não informar</option>
                 <option value="ativa">ATIVA</option>
                 <option value="inativa">INATIVA</option>
               </select>
             </label>
-            <Button
-              disabled={enviando || !previa || previa.validas === 0}
-              onClick={() => void importar()}
-            >
-              {enviando ? 'Importando…' : `Importar ${previa ? previa.validas : ''} empresa(s)`}
+            <Button disabled={enviando} onClick={() => void importar()}>
+              {enviando
+                ? 'Importando…'
+                : `Importar${previa && previa.validas ? ` ${previa.validas}` : ''} empresa(s)`}
             </Button>
           </div>
         </section>
