@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T21:20:25.303Z",
+  "generatedAt": "2026-11-07T21:24:24.160Z",
   "collections": [
     {
       "name": "users",
@@ -53,11 +53,11 @@
       "name": "empresas",
       "type": "base",
       "apiRules": {
-        "list": "@request.auth.id != '' && criado_por = @request.auth.id",
-        "view": "@request.auth.id != '' && criado_por = @request.auth.id",
-        "create": "@request.auth.id != ''",
-        "update": "@request.auth.id != '' && criado_por = @request.auth.id",
-        "delete": "@request.auth.id != '' && criado_por = @request.auth.id"
+        "list": "",
+        "view": "",
+        "create": null,
+        "update": null,
+        "delete": null
       },
       "fields": [
         {

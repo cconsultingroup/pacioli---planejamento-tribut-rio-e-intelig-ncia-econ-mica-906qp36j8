@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import pb from '@/lib/pocketbase/client'
 import { Button } from '@/components/ui/button'
 import { lerCsv, lerXlsx } from '@/lib/xlsx-lite'
@@ -18,7 +17,6 @@ type Empresa = {
 const ROTULO_PROCURACAO: Record<string, string> = { sim: 'Tem', nao: 'Não tem' }
 
 export default function Empresas() {
-  const nav = useNavigate()
   const [lista, setLista] = useState<Empresa[]>([])
   const [carregando, setCarregando] = useState(true)
   const [busca, setBusca] = useState('')
@@ -45,10 +43,6 @@ export default function Empresas() {
   }
 
   useEffect(() => {
-    if (!pb.authStore.isValid) {
-      nav('/login', { replace: true })
-      return
-    }
     void carregar()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -113,11 +107,6 @@ export default function Empresas() {
     )
   }, [lista, busca])
 
-  const sair = () => {
-    pb.authStore.clear()
-    nav('/login', { replace: true })
-  }
-
   return (
     <div className="mx-auto w-full max-w-5xl space-y-6 px-4 py-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -128,9 +117,6 @@ export default function Empresas() {
         <div className="flex gap-2">
           <Button onClick={() => setPainel((p) => !p)}>
             {painel ? 'Fechar importação' : 'Importar planilha'}
-          </Button>
-          <Button variant="ghost" onClick={sair}>
-            Sair
           </Button>
         </div>
       </div>

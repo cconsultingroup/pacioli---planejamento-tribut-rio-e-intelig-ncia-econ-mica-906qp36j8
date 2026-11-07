@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from '@/components/ui/toaster'
 import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import Login from './pages/Login'
 import Empresas from './pages/Empresas'
 import NotFound from './pages/NotFound'
 import Layout from './components/Layout'
@@ -19,7 +18,6 @@ const App = () => (
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Navigate to="/empresas" replace />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/empresas" element={<Empresas />} />
         </Route>
         <Route path="*" element={<NotFound />} />

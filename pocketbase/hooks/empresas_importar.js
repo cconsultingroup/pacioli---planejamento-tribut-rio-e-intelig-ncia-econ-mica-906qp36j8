@@ -1,7 +1,5 @@
 routerAdd('POST', '/backend/v1/empresas/importar', (e) => {
-  if (!e.auth) {
-    return e.json(401, { erro: 'Faça login para importar empresas.' })
-  }
+  // Sem login por enquanto (pedido da Thamyres, 07/11): a rota fica aberta.
   let b = {}
   try {
     b = e.requestInfo().body || {}
@@ -62,7 +60,7 @@ routerAdd('POST', '/backend/v1/empresas/importar', (e) => {
       rec.set('situacao', situacaoLinha || situacaoPadrao)
       if (procuracao) rec.set('procuracao', procuracao)
       if (validade) rec.set('procuracao_validade', validade + ' 00:00:00.000Z')
-      rec.set('criado_por', e.auth.id)
+      // criado_por fica vazio enquanto não houver login.
       $app.save(rec)
       novas++
     } else {
