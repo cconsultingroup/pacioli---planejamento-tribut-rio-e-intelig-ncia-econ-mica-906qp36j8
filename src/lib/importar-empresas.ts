@@ -8,6 +8,7 @@ export type EmpresaImportacao = {
   regime_tributacao?: 'simples_nacional' | 'lucro_presumido' | 'lucro_real' | 'nao_informado' | ''
   procuracao?: 'sim' | 'nao' | ''
   procuracao_validade?: string // AAAA-MM-DD
+  possivel_cross_sell?: 'sim' | 'nao' | ''
   vendedor_responsavel?: string
   cadastrado_em?: string // AAAA-MM-DDTHH:mm:ss.000Z
   observacao?: string
@@ -115,6 +116,25 @@ export function parseRegimeTributacao(
   return ''
 }
 
+// Parse do campo "Possível cross-sell (obrigatório)"
+// Aceita Sim/Não, true/false, 1/0 e variações com ou sem hífen ("cross sell", "cross-sell")
+export function parsePossivelCrossSell(valor: string): 'sim' | 'nao' | '' {
+  if (!valor) return ''
+  const v = valor.trim().toLowerCase()
+  if (v.startsWith('sim') || v === 's' || v === 'true' || v === '1' || v === 'x' || v === 'yes') {
+    return 'sim'
+  }
+  if (v.startsWith('n') || v === 'false' || v === '0' || v === '-') {
+    return 'nao'
+  }
+  return ''
+}
+
+export function ehColunaCrossSell(cabecalho: string): boolean {
+  const c = normalizarCabecalho(cabecalho)
+  return c.includes('cross_sell') || c.includes('crosssell')
+}
+
 // Normaliza situação cadastral (ATIVA, INATIVA)
 export function parseSituacao(valor: string): 'ativa' | 'inativa' | '' {
   if (!valor) return ''
@@ -150,6 +170,7 @@ export function linhasParaTexto(linhas: string[][]): Previa {
     else if (c.includes('regime') || c.includes('tributacao')) mapaColunas['regime'] = idx
     else if (c.includes('situacao') || c.includes('status')) mapaColunas['situacao'] = idx
     else if (c.includes('procuracao')) mapaColunas['procuracao'] = idx
+    else if (ehColunaCrossSell(c)) mapaColunas['cross_sell'] = idx
     else if (c.includes('vendedor')) mapaColunas['vendedor'] = idx
     else if (c.includes('cadastrado')) mapaColunas['cadastrado'] = idx
     else if (c.includes('observ') || c.includes('obs')) mapaColunas['observacao'] = idx
@@ -172,6 +193,7 @@ export function linhasParaTexto(linhas: string[][]): Previa {
     let situacaoBruta = ''
     let regimeBruto = ''
     let procuracaoBruta = ''
+    let crossSellBruto = ''
     let vendedorBruto = ''
     let cadastradoBruto = ''
     let observacaoBruta = ''
@@ -183,6 +205,8 @@ export function linhasParaTexto(linhas: string[][]): Previa {
       if (mapaColunas['regime'] !== undefined) regimeBruto = cols[mapaColunas['regime']] ?? ''
       if (mapaColunas['procuracao'] !== undefined)
         procuracaoBruta = cols[mapaColunas['procuracao']] ?? ''
+      if (mapaColunas['cross_sell'] !== undefined)
+        crossSellBruto = cols[mapaColunas['cross_sell']] ?? ''
       if (mapaColunas['vendedor'] !== undefined) vendedorBruto = cols[mapaColunas['vendedor']] ?? ''
       if (mapaColunas['cadastrado'] !== undefined)
         cadastradoBruto = cols[mapaColunas['cadastrado']] ?? ''
@@ -200,6 +224,7 @@ export function linhasParaTexto(linhas: string[][]): Previa {
     const situacao = parseSituacao(situacaoBruta)
     const regime_tributacao = parseRegimeTributacao(regimeBruto)
     const procInfo = parseProcuracao(procuracaoBruta)
+    const possivel_cross_sell = parsePossivelCrossSell(crossSellBruto)
     const vendedor_responsavel = vendedorBruto.trim()
     const cadastrado_em = extrairDataHoraPocketBase(cadastradoBruto)
     const observacao = observacaoBruta.trim()
@@ -211,6 +236,7 @@ export function linhasParaTexto(linhas: string[][]): Previa {
       !situacao &&
       !regime_tributacao &&
       !procInfo.procuracao &&
+      !possivel_cross_sell &&
       !vendedor_responsavel &&
       !observacao
     ) {
@@ -225,6 +251,7 @@ export function linhasParaTexto(linhas: string[][]): Previa {
       regime_tributacao,
       procuracao: procInfo.procuracao,
       procuracao_validade: procInfo.validade,
+      possivel_cross_sell,
       vendedor_responsavel,
       cadastrado_em,
       observacao,

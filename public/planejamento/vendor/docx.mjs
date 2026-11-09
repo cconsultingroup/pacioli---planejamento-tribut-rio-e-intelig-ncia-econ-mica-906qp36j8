@@ -20119,46 +20119,38 @@ var lg = Mn.exports,
   Dc = class {
     static toString(e, r) {
       return Zt(this, null, function* () {
-        return yield this.compiler
-          .compile(e, Sr(r))
-          .generateAsync({
-            type: 'string',
-            mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            compression: 'DEFLATE',
-          })
+        return yield this.compiler.compile(e, Sr(r)).generateAsync({
+          type: 'string',
+          mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          compression: 'DEFLATE',
+        })
       })
     }
     static toBuffer(e, r) {
       return Zt(this, null, function* () {
-        return yield this.compiler
-          .compile(e, Sr(r))
-          .generateAsync({
-            type: 'nodebuffer',
-            mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            compression: 'DEFLATE',
-          })
+        return yield this.compiler.compile(e, Sr(r)).generateAsync({
+          type: 'nodebuffer',
+          mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          compression: 'DEFLATE',
+        })
       })
     }
     static toBase64String(e, r) {
       return Zt(this, null, function* () {
-        return yield this.compiler
-          .compile(e, Sr(r))
-          .generateAsync({
-            type: 'base64',
-            mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            compression: 'DEFLATE',
-          })
+        return yield this.compiler.compile(e, Sr(r)).generateAsync({
+          type: 'base64',
+          mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          compression: 'DEFLATE',
+        })
       })
     }
     static toBlob(e, r) {
       return Zt(this, null, function* () {
-        return yield this.compiler
-          .compile(e, Sr(r))
-          .generateAsync({
-            type: 'blob',
-            mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            compression: 'DEFLATE',
-          })
+        return yield this.compiler.compile(e, Sr(r)).generateAsync({
+          type: 'blob',
+          mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          compression: 'DEFLATE',
+        })
       })
     }
     static toStream(e, r) {

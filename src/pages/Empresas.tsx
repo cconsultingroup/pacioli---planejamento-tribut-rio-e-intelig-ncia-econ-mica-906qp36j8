@@ -12,6 +12,7 @@ type Empresa = {
   regime_tributacao?: string
   procuracao: string
   procuracao_validade: string
+  possivel_cross_sell?: string
   vendedor_responsavel?: string
   cadastrado_em?: string
   observacao?: string
@@ -32,6 +33,12 @@ const OPCOES_PROCURACAO = [
   ['', 'Não informar (mantém como está)'],
 ] as const
 
+const OPCOES_CROSS_SELL = [
+  ['sim', 'Marcar todas como Sim'],
+  ['nao', 'Marcar todas como Não'],
+  ['', 'Não informar (mantém como está)'],
+] as const
+
 export default function Empresas() {
   const [lista, setLista] = useState<Empresa[]>([])
   const [carregando, setCarregando] = useState(true)
@@ -43,6 +50,7 @@ export default function Empresas() {
   // procuracao: 'sim' = marcar todas como com procuração, 'nao' = sem procuração, '' = não informar
   // Nenhum campo é obrigatório: o padrão é não informar nada.
   const [procuracao, setProcuracao] = useState<'' | 'sim' | 'nao'>('')
+  const [crossSell, setCrossSell] = useState<'' | 'sim' | 'nao'>('')
   const [validade, setValidade] = useState('')
   const [situacao, setSituacao] = useState('ativa')
   const [enviando, setEnviando] = useState(false)
@@ -98,6 +106,7 @@ export default function Empresas() {
           situacao,
           procuracao: procuracao === '' ? null : procuracao,
           procuracao_validade: validade || null,
+          possivel_cross_sell: crossSell === '' ? null : crossSell,
         },
       })
       setResultado(
@@ -183,6 +192,33 @@ export default function Empresas() {
               ))}
             </div>
           </fieldset>
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-medium">
+              Possível cross-sell — aplicar a todas as empresas importadas
+            </legend>
+            <div className="flex flex-wrap items-center gap-4 text-sm">
+              {OPCOES_CROSS_SELL.map(([valor, rotulo]) => (
+                <label
+                  key={valor || 'vazio-cs'}
+                  className="flex cursor-pointer items-center gap-1.5"
+                >
+                  <input
+                    type="radio"
+                    name="cross-sell-importacao"
+                    value={valor}
+                    checked={crossSell === valor}
+                    onChange={() => setCrossSell(valor)}
+                    className="accent-primary"
+                  />
+                  {rotulo}
+                </label>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Se nenhuma opção for escolhida, usa o valor da coluna "Possível cross-sell" da
+              planilha (quando existir).
+            </p>
+          </fieldset>
           <div className="flex flex-wrap items-end gap-3">
             <label className="space-y-1 text-sm font-medium">
               <span>Validade da procuração (opcional)</span>
@@ -245,6 +281,7 @@ export default function Empresas() {
                 <th className="px-3 py-2 font-medium">Regime</th>
                 <th className="px-3 py-2 font-medium">Situação</th>
                 <th className="px-3 py-2 font-medium">Procuração</th>
+                <th className="px-3 py-2 font-medium">Possível cross-sell</th>
                 <th className="px-3 py-2 font-medium">Vendedor</th>
                 <th className="px-3 py-2 font-medium">Cadastrada em</th>
               </tr>
@@ -286,6 +323,13 @@ export default function Empresas() {
                     </td>
                     <td className="px-3 py-2">{e.situacao ? e.situacao.toUpperCase() : '-'}</td>
                     <td className="px-3 py-2">{procTexto}</td>
+                    <td className="px-3 py-2">
+                      {e.possivel_cross_sell === 'sim'
+                        ? 'Sim'
+                        : e.possivel_cross_sell === 'nao'
+                          ? 'Não'
+                          : '-'}
+                    </td>
                     <td className="px-3 py-2 text-muted-foreground">
                       {e.vendedor_responsavel || '-'}
                     </td>

@@ -19,6 +19,10 @@ routerAdd('POST', '/backend/v1/empresas/importar', (e) => {
   if (b.procuracao === true || b.procuracao === 'sim') procuracaoGlobal = 'sim'
   if (b.procuracao === false || b.procuracao === 'nao') procuracaoGlobal = 'nao'
 
+  let crossSellGlobal = ''
+  if (b.possivel_cross_sell === true || b.possivel_cross_sell === 'sim') crossSellGlobal = 'sim'
+  if (b.possivel_cross_sell === false || b.possivel_cross_sell === 'nao') crossSellGlobal = 'nao'
+
   const validadeGlobal =
     typeof b.procuracao_validade === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(b.procuracao_validade)
       ? b.procuracao_validade
@@ -153,6 +157,21 @@ routerAdd('POST', '/backend/v1/empresas/importar', (e) => {
         ? item.vendedor_responsavel.trim().slice(0, 255)
         : ''
 
+    // Possível cross-sell: valor do item (quando existir) ou a escolha global do formulário
+    let crossSellItem = ''
+    if (item.possivel_cross_sell === 'sim' || item.possivel_cross_sell === true)
+      crossSellItem = 'sim'
+    else if (item.possivel_cross_sell === 'nao' || item.possivel_cross_sell === false)
+      crossSellItem = 'nao'
+    else if (typeof item.possivel_cross_sell === 'string' && item.possivel_cross_sell.trim()) {
+      const cs = item.possivel_cross_sell.trim().toLowerCase()
+      if (cs.indexOf('sim') === 0 || cs === 's' || cs === 'true' || cs === '1')
+        crossSellItem = 'sim'
+      else if (cs.indexOf('nao') === 0 || cs.indexOf('não') === 0 || cs === 'n')
+        crossSellItem = 'nao'
+    }
+    const crossSellFinal = crossSellGlobal || crossSellItem
+
     // Cadastrado em
     let cadastradoEm = ''
     if (typeof item.cadastrado_em === 'string' && item.cadastrado_em.trim()) {
@@ -164,7 +183,16 @@ routerAdd('POST', '/backend/v1/empresas/importar', (e) => {
       typeof item.observacao === 'string' ? item.observacao.trim().slice(0, 1000) : ''
 
     // Se a linha não tiver dados substantivos, ignora
-    if (!cnpj && !nome && !situacao && !regime && !procuracaoFinal && !vendedor && !observacao) {
+    if (
+      !cnpj &&
+      !nome &&
+      !situacao &&
+      !regime &&
+      !procuracaoFinal &&
+      !crossSellFinal &&
+      !vendedor &&
+      !observacao
+    ) {
       continue
     }
 
@@ -198,6 +226,7 @@ routerAdd('POST', '/backend/v1/empresas/importar', (e) => {
         if (regime) rec.set('regime_tributacao', regime)
         if (procuracaoFinal) rec.set('procuracao', procuracaoFinal)
         if (validadeFinal) rec.set('procuracao_validade', validadeFinal + ' 00:00:00.000Z')
+        if (crossSellFinal) rec.set('possivel_cross_sell', crossSellFinal)
         if (vendedor) rec.set('vendedor_responsavel', vendedor)
         if (cadastradoEm) rec.set('cadastrado_em', cadastradoEm)
         if (observacao) rec.set('observacao', observacao)
@@ -211,6 +240,7 @@ routerAdd('POST', '/backend/v1/empresas/importar', (e) => {
         if (regime) rec.set('regime_tributacao', regime)
         if (procuracaoFinal) rec.set('procuracao', procuracaoFinal)
         if (validadeFinal) rec.set('procuracao_validade', validadeFinal + ' 00:00:00.000Z')
+        if (crossSellFinal) rec.set('possivel_cross_sell', crossSellFinal)
         if (vendedor) rec.set('vendedor_responsavel', vendedor)
         if (cadastradoEm && !rec.getString('cadastrado_em')) rec.set('cadastrado_em', cadastradoEm)
         if (observacao) rec.set('observacao', observacao)
