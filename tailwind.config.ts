@@ -31,6 +31,9 @@ export default {
         display: ['SF Pro Display', 'Inter var', 'system-ui', 'sans-serif'],
       },
       colors: {
+        ok: 'hsl(var(--ok))',
+        aviso: 'hsl(var(--aviso))',
+        risco: 'hsl(var(--risco))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
