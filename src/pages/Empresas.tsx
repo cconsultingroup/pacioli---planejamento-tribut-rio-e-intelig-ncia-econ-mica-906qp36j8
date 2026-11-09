@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import pb from '@/lib/pocketbase/client'
 import { Button } from '@/components/ui/button'
+import EmpresasAcoesLote from '@/components/EmpresasAcoesLote'
 import { lerCsv, lerXlsx } from '@/lib/xlsx-lite'
 import { cnpjFmt, linhasParaTexto, type Previa } from '@/lib/importar-empresas'
 
@@ -262,6 +263,8 @@ export default function Empresas() {
         onChange={(e) => setBusca(e.target.value)}
         className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
       />
+
+      <EmpresasAcoesLote alvo={filtradas} aoConcluir={carregar} />
 
       {carregando ? (
         <p className="text-sm text-muted-foreground">Carregando empresas…</p>
