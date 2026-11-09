@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T22:16:18.593Z",
+  "generatedAt": "2026-11-09T13:43:24.087Z",
   "collections": [
     {
       "name": "users",
@@ -29,14 +29,19 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         }
       ],
       "indexes": [
@@ -72,14 +77,20 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": ["ativa", "inativa"]
+          "selectValues": [
+            "ativa",
+            "inativa"
+          ]
         },
         {
           "name": "procuracao",
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": ["sim", "nao"]
+          "selectValues": [
+            "sim",
+            "nao"
+          ]
         },
         {
           "name": "procuracao_validade",
@@ -105,21 +116,31 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         },
         {
           "name": "regime_tributacao",
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": ["simples_nacional", "lucro_presumido", "lucro_real", "nao_informado"]
+          "selectValues": [
+            "simples_nacional",
+            "lucro_presumido",
+            "lucro_real",
+            "nao_informado"
+          ]
         },
         {
           "name": "vendedor_responsavel",
@@ -134,7 +155,338 @@
           "system": false
         }
       ],
-      "indexes": ["CREATE UNIQUE INDEX `idx_empresas_cnpj` ON `empresas` (cnpj) WHERE cnpj != ''"]
+      "indexes": [
+        "CREATE UNIQUE INDEX `idx_empresas_cnpj` ON `empresas` (cnpj) WHERE cnpj != ''"
+      ]
+    },
+    {
+      "name": "pt_planejamentos",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != ''",
+        "delete": "@request.auth.id != ''"
+      },
+      "fields": [
+        {
+          "name": "cnpj",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "periodo",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "responsavel",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "cross_sell",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "dados",
+          "type": "json",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": [
+            "onCreate"
+          ]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
+        }
+      ],
+      "indexes": [
+        "CREATE INDEX idx_pt_planejamentos_cnpj ON pt_planejamentos (cnpj)"
+      ]
+    },
+    {
+      "name": "pt_inteligencia",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != ''",
+        "delete": "@request.auth.id != ''"
+      },
+      "fields": [
+        {
+          "name": "mes",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "situacao",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "dados",
+          "type": "json",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": [
+            "onCreate"
+          ]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
+        }
+      ],
+      "indexes": [
+        "CREATE INDEX idx_pt_inteligencia_mes ON pt_inteligencia (mes)"
+      ]
+    },
+    {
+      "name": "pt_estrategias_extra",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != ''",
+        "delete": "@request.auth.id != ''"
+      },
+      "fields": [
+        {
+          "name": "numero",
+          "type": "number",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "titulo",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "dados",
+          "type": "json",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": [
+            "onCreate"
+          ]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
+        }
+      ],
+      "indexes": [
+        "CREATE UNIQUE INDEX idx_pt_estrategias_extra_numero ON pt_estrategias_extra (numero)"
+      ]
+    },
+    {
+      "name": "pt_destinatarios",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != ''",
+        "delete": "@request.auth.id != ''"
+      },
+      "fields": [
+        {
+          "name": "grupo",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "email",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "relatorios",
+          "type": "json",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "periodicidade",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "ativo",
+          "type": "bool",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": [
+            "onCreate"
+          ]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "name": "pt_envios",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": null,
+        "update": null,
+        "delete": null
+      },
+      "fields": [
+        {
+          "name": "destinatario",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "email",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "relatorio",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "assunto",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "detalhe",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": [
+            "onCreate"
+          ]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
+        }
+      ],
+      "indexes": [
+        "CREATE INDEX idx_pt_envios_created ON pt_envios (created)"
+      ]
     }
   ]
 }
