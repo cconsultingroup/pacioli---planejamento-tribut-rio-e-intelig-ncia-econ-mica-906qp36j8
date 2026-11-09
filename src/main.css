@@ -288,3 +288,74 @@
     animation: spotlight 2s ease forwards;
   }
 }
+
+/* Identidade C CONT · Planejamento Tributário (verde-petróleo, menu azul-marinho) e cores de situação (ok, aviso, risco). */
+@layer base {
+  :root {
+    /* Menu lateral C CONT (azul-marinho), igual nos dois temas. */
+    --lateral: 234 48% 16%;
+    --lateral-texto: 228 32% 78%;
+    --lateral-ouro: 42 80% 58%;
+    --lateral-teal: 172 62% 52%;
+    --lateral-lilas: 248 80% 80%;
+    --background: 160 14% 97%;
+    --foreground: 165 25% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 165 25% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 165 25% 10%;
+    --primary: 174 77% 24%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 160 16% 92%;
+    --secondary-foreground: 165 25% 14%;
+    --muted: 160 14% 93%;
+    --muted-foreground: 165 9% 38%;
+    --accent: 168 36% 90%;
+    --accent-foreground: 174 77% 18%;
+    --destructive: 4 64% 46%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 160 13% 86%;
+    --input: 160 13% 86%;
+    --ring: 174 77% 30%;
+    --radius: 0.75rem;
+    --ok: 145 59% 32%;
+    --aviso: 38 88% 38%;
+    --risco: 4 64% 46%;
+    --chart-1: 174 77% 30%;
+    --chart-2: 38 88% 46%;
+    --chart-3: 214 64% 46%;
+    --chart-4: 280 45% 52%;
+    --chart-5: 4 64% 52%;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: 165 22% 7%;
+      --foreground: 160 18% 91%;
+      --card: 165 20% 10%;
+      --card-foreground: 160 18% 91%;
+      --popover: 165 20% 10%;
+      --popover-foreground: 160 18% 91%;
+      --primary: 172 48% 52%;
+      --primary-foreground: 165 30% 8%;
+      --secondary: 165 16% 16%;
+      --secondary-foreground: 160 18% 91%;
+      --muted: 165 16% 15%;
+      --muted-foreground: 162 10% 64%;
+      --accent: 170 30% 18%;
+      --accent-foreground: 172 48% 70%;
+      --destructive: 4 72% 64%;
+      --destructive-foreground: 165 30% 8%;
+      --border: 165 14% 20%;
+      --input: 165 14% 20%;
+      --ring: 172 48% 52%;
+      --ok: 145 52% 60%;
+      --aviso: 40 85% 64%;
+      --risco: 4 80% 70%;
+      --chart-1: 172 48% 52%;
+      --chart-2: 40 85% 60%;
+      --chart-3: 212 75% 66%;
+      --chart-4: 280 55% 72%;
+      --chart-5: 4 80% 68%;
+    }
+  }
+}
