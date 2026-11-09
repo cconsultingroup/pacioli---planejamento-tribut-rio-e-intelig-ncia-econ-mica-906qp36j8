@@ -243,3 +243,89 @@ cronAdd('pt-inteligencia-mensal', '0 11 1 * *', () => {
   for (const x of u.destinatarios('inteligencia'))
     if (x.periodicidade === 'mensal') u.enviarEmail(x.nome, x.email, 'inteligencia', assunto, html)
 })
+
+// ------------------------------------------------------------------ usuários
+// O banco não aceita autocadastro (migração 0019). Enquanto não houver nenhum usuário, a tela de login permite criar o
+// primeiro acesso; depois disso, só quem está logado cadastra outros (página Usuários).
+routerAdd('GET', '/backend/v1/pt/primeiro-acesso', (e) => {
+  const n = $app.findRecordsByFilter('users', "id != ''", '', 1, 0).length
+  return e.json(200, { livre: n === 0 })
+})
+
+routerAdd('POST', '/backend/v1/pt/primeiro-acesso', (e) => {
+  if ($app.findRecordsByFilter('users', "id != ''", '', 1, 0).length)
+    return e.json(403, {
+      erro: 'O primeiro acesso já foi criado. Peça a um usuário cadastrado para incluir você.',
+    })
+  let b = {}
+  try {
+    b = e.requestInfo().body || {}
+  } catch (err) {
+    b = {}
+  }
+  const nome = String(b.nome || '').trim()
+  const email = String(b.email || '')
+    .trim()
+    .toLowerCase()
+  const senha = String(b.senha || '')
+  if (!nome) return e.json(422, { erro: 'Informe o nome.' })
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return e.json(422, { erro: 'E-mail inválido.' })
+  if (senha.length < 8) return e.json(422, { erro: 'A senha precisa ter pelo menos 8 caracteres.' })
+  const r = new Record($app.findCollectionByNameOrId('users'))
+  r.set('email', email)
+  r.set('name', nome)
+  r.setPassword(senha)
+  r.setVerified(true)
+  $app.save(r)
+  return e.json(200, { ok: true })
+})
+
+routerAdd(
+  'GET',
+  '/backend/v1/pt/usuarios',
+  (e) => {
+    const lista = $app.findRecordsByFilter('users', "id != ''", 'name', 0, 0)
+    return e.json(
+      200,
+      lista.map((r) => ({
+        id: r.id,
+        nome: r.getString('name'),
+        email: r.getString('email'),
+        criado: r.getString('created'),
+      })),
+    )
+  },
+  $apis.requireAuth(),
+)
+
+routerAdd(
+  'POST',
+  '/backend/v1/pt/usuarios',
+  (e) => {
+    let b = {}
+    try {
+      b = e.requestInfo().body || {}
+    } catch (err) {
+      b = {}
+    }
+    const nome = String(b.nome || '').trim()
+    const email = String(b.email || '')
+      .trim()
+      .toLowerCase()
+    const senha = String(b.senha || '')
+    if (!nome) return e.json(422, { erro: 'Informe o nome.' })
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return e.json(422, { erro: 'E-mail inválido.' })
+    if (senha.length < 8)
+      return e.json(422, { erro: 'A senha precisa ter pelo menos 8 caracteres.' })
+    if ($app.findRecordsByFilter('users', 'email = {:email}', '', 1, 0, { email: email }).length)
+      return e.json(409, { erro: 'Já existe um usuário com esse e-mail.' })
+    const r = new Record($app.findCollectionByNameOrId('users'))
+    r.set('email', email)
+    r.set('name', nome)
+    r.setPassword(senha)
+    r.setVerified(true)
+    $app.save(r)
+    return e.json(200, { ok: true, id: r.id })
+  },
+  $apis.requireAuth(),
+)

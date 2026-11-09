@@ -1,5 +1,6 @@
-/* Entrada no sistema: usuários da tabela users do PocketBase (e-mail e senha). */
-import { useState } from 'react'
+/* Entrada no sistema: usuários da tabela users do PocketBase (e-mail e senha).
+   Enquanto não existir nenhum usuário, a tela oferece o "primeiro acesso" para criar o seu. */
+import { useEffect, useState } from 'react'
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import pb from '@/lib/pocketbase/client'
 import { Button } from '@/components/ui/button'
@@ -9,11 +10,21 @@ import logo from '@/planejamento/assets/logo-consulting.png'
 export default function Login() {
   const nav = useNavigate()
   const [busca] = useSearchParams()
+  const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [erro, setErro] = useState('')
   const [enviando, setEnviando] = useState(false)
+  const [primeiro, setPrimeiro] = useState(false)
   const destino = busca.get('voltar') || '/planejamento-tributario'
+
+  useEffect(() => {
+    fetch(pb.buildURL('/backend/v1/pt/primeiro-acesso'))
+      .then((r) => (r.ok ? r.json() : { livre: false }))
+      .then((d: { livre?: boolean }) => setPrimeiro(!!d.livre))
+      .catch(() => setPrimeiro(false))
+  }, [])
+
   if (pb.authStore.isValid) return <Navigate to={destino} replace />
 
   async function entrar(ev: React.FormEvent) {
@@ -21,10 +32,19 @@ export default function Login() {
     setErro('')
     setEnviando(true)
     try {
-      await pb.collection('users').authWithPassword(email.trim(), senha)
+      if (primeiro) {
+        const r = await fetch(pb.buildURL('/backend/v1/pt/primeiro-acesso'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome, email, senha }),
+        })
+        const d = (await r.json().catch(() => ({}))) as { erro?: string }
+        if (!r.ok) throw new Error(d.erro || 'Não foi possível criar o acesso.')
+      }
+      await pb.collection('users').authWithPassword(email.trim().toLowerCase(), senha)
       nav(destino, { replace: true })
-    } catch {
-      setErro('E-mail ou senha inválidos.')
+    } catch (e) {
+      setErro(primeiro && e instanceof Error ? e.message : 'E-mail ou senha inválidos.')
     } finally {
       setEnviando(false)
     }
@@ -48,9 +68,21 @@ export default function Login() {
           className="space-y-4 rounded-2xl bg-card p-6 text-card-foreground shadow-xl"
         >
           <div>
-            <h1 className="text-xl font-bold">Acesso ao sistema</h1>
-            <p className="text-sm text-muted-foreground">Entre com seu e-mail e sua senha.</p>
+            <h1 className="text-xl font-bold">
+              {primeiro ? 'Primeiro acesso' : 'Acesso ao sistema'}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {primeiro
+                ? 'Ainda não há nenhum usuário. Crie o seu acesso: depois você cadastra a equipe em Usuários.'
+                : 'Entre com seu e-mail e sua senha.'}
+            </p>
           </div>
+          {primeiro && (
+            <label className="block space-y-1.5 text-sm font-medium">
+              <span>Nome</span>
+              <Input value={nome} onChange={(e) => setNome(e.target.value)} required autoFocus />
+            </label>
+          )}
           <label className="block space-y-1.5 text-sm font-medium">
             <span>E-mail</span>
             <Input
@@ -59,14 +91,15 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              autoFocus
+              autoFocus={!primeiro}
             />
           </label>
           <label className="block space-y-1.5 text-sm font-medium">
-            <span>Senha</span>
+            <span>{primeiro ? 'Senha (mínimo de 8 caracteres)' : 'Senha'}</span>
             <Input
               type="password"
-              autoComplete="current-password"
+              autoComplete={primeiro ? 'new-password' : 'current-password'}
+              minLength={primeiro ? 8 : undefined}
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               required
@@ -74,7 +107,7 @@ export default function Login() {
           </label>
           {erro && <p className="rounded-md bg-risco/10 px-3 py-2 text-sm text-risco">{erro}</p>}
           <Button type="submit" className="w-full" disabled={enviando}>
-            {enviando ? 'Entrando…' : 'Entrar'}
+            {enviando ? 'Aguarde…' : primeiro ? 'Criar acesso e entrar' : 'Entrar'}
           </Button>
           <p className="border-t pt-2 text-center text-xs text-muted-foreground">
             Acesso exclusivo da equipe C Consulting Group
