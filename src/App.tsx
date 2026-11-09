@@ -7,6 +7,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import Empresas from './pages/Empresas'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
+import Usuarios from './pages/Usuarios'
 import Layout from './components/Layout'
 
 // Planejamento Tributário 2026–2033 (src/planejamento): carregado só quando aberto.
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/" element={<Navigate to="/planejamento-tributario" replace />} />
           <Route path="/planejamento-tributario/*" element={<PlanejamentoTributario />} />
           <Route path="/empresas" element={<Empresas />} />
+          <Route path="/usuarios" element={<Usuarios />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

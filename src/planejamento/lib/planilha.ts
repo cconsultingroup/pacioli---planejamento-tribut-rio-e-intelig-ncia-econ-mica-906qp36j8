@@ -1,13 +1,14 @@
 // Planilha Excel com fórmulas auditáveis: premissas, situação atual, memória de cada estratégia, consolidação e projeção.
 // As células de economia e projeção são FÓRMULAS do Excel (não valores colados), para conferência independente.
-import ExcelJS from 'exceljs'
+import { carregarBiblioteca } from './vendor'
 import { ANOS, avaliar, fatorTributo } from './calculo'
 import { dadosRelatorio } from './respostas'
 import type { Estrategia, Planejamento, Tributo } from './tipos'
 import { NOME_TRIBUTO, TRIBUTOS } from './tipos'
 
 const MOEDA = '"R$" #,##0.00;[Red]-"R$" #,##0.00'
-const cab = (ws: ExcelJS.Worksheet, linha: number) => {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const cab = (ws: any, linha: number) => {
   const r = ws.getRow(linha)
   r.font = { bold: true, color: { argb: 'FF0B4F4A' } }
   r.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6F0EE' } }
@@ -17,6 +18,8 @@ export async function gerarPlanilha(
   pl: Planejamento,
   mapa: Map<number, Estrategia>,
 ): Promise<Blob> {
+  // ExcelJS vem de public/planejamento/vendor/exceljs.mjs (o Skip não aceita dependências novas no package.json).
+  const ExcelJS = (await carregarBiblioteca('exceljs.mjs')).default
   const d = dadosRelatorio(pl, mapa)
   const wb = new ExcelJS.Workbook()
   wb.creator = 'C Consulting Group'

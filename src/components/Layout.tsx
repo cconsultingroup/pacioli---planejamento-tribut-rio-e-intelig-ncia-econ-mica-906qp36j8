@@ -11,6 +11,7 @@ import {
   LogOut,
   Mail,
   Menu,
+  UserRound,
   X,
   type LucideIcon,
 } from 'lucide-react'
@@ -75,6 +76,12 @@ const APOIO: Item[] = [
     rotulo: 'Metodologia e transição',
     icone: BookOpen,
     ativo: (c) => c.startsWith(BASE + '/metodologia'),
+  },
+  {
+    rota: '/usuarios',
+    rotulo: 'Usuários',
+    icone: UserRound,
+    ativo: (c) => c.startsWith('/usuarios'),
   },
 ]
 

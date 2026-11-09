@@ -1,22 +1,6 @@
 // Dossiê técnico em Word (.docx): fundamentos, estratégias, riscos e memórias de cálculo.
 // Blocos e estratégias usam estilos de Título 1/2/3 do Word (Painel de Navegação).
-import {
-  AlignmentType,
-  Document,
-  Footer,
-  HeadingLevel,
-  ImageRun,
-  Packer,
-  PageNumber,
-  Paragraph,
-  ShadingType,
-  Table,
-  TableCell,
-  TableOfContents,
-  TableRow,
-  TextRun,
-  WidthType,
-} from 'docx'
+import { carregarBiblioteca } from './vendor'
 import { ANOS, avaliar, fatorTributo, fmtMoeda as brl } from './calculo'
 import { compararRegimes } from './comparativo'
 import { dadosRelatorio, respostasObrigatorias } from './respostas'
@@ -24,6 +8,45 @@ import { barrasAgrupadas, barrasHorizontais, svgParaPng } from './svg'
 import { areaDoModelo, triar } from './triagem'
 import type { Estrategia, Manual, Planejamento, Tributo } from './tipos'
 import { NOME_ETAPA, NOME_SITUACAO, NOME_TRIBUTO } from './tipos'
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// A biblioteca docx vem de public/planejamento/vendor/docx.mjs (o Skip não aceita dependências novas no package.json).
+let AlignmentType: any,
+  Document: any,
+  Footer: any,
+  HeadingLevel: any,
+  ImageRun: any,
+  Packer: any,
+  PageNumber: any
+let Paragraph: any,
+  ShadingType: any,
+  Table: any,
+  TableCell: any,
+  TableOfContents: any,
+  TableRow: any,
+  TextRun: any
+let WidthType: any
+async function carregarDocx() {
+  if (Paragraph) return
+  const m = await carregarBiblioteca('docx.mjs')
+  ;({
+    AlignmentType,
+    Document,
+    Footer,
+    HeadingLevel,
+    ImageRun,
+    Packer,
+    PageNumber,
+    Paragraph,
+    ShadingType,
+    Table,
+    TableCell,
+    TableOfContents,
+    TableRow,
+    TextRun,
+    WidthType,
+  } = m)
+}
 
 const cnpjFmt = (c: string) => c.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5')
 const H1 = (t: string) =>
@@ -104,12 +127,13 @@ export async function gerarDossieWord(
   manual: Manual,
   mapa: Map<number, Estrategia>,
 ): Promise<Blob> {
+  await carregarDocx()
   const d = dadosRelatorio(pl, mapa)
   const refs = new Map(manual.referencias.map((r) => [r.codigo, r.descricao]))
   const ctxBase = { perfil: pl.perfil, premissas: pl.premissas, atual: pl.atual }
   const lista = d.recomendadas.length ? d.recomendadas : d.emAnalise
   const g = (pl.premissas.crescimentoReceita || 0) / 100
-  const filhos: (Paragraph | Table | TableOfContents)[] = []
+  const filhos: any[] = []
 
   filhos.push(
     new Paragraph({
