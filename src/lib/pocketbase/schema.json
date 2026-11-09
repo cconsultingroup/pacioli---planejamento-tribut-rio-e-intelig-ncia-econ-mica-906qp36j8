@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T13:43:24.087Z",
+  "generatedAt": "2026-11-09T13:56:28.951Z",
   "collections": [
     {
       "name": "users",
@@ -7,7 +7,7 @@
       "apiRules": {
         "list": "id = @request.auth.id",
         "view": "id = @request.auth.id",
-        "create": "",
+        "create": null,
         "update": "id = @request.auth.id",
         "delete": "id = @request.auth.id"
       },
