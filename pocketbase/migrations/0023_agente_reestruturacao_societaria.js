@@ -1,5 +1,5 @@
 /// <reference path="../pb_data/types.d.ts" />
-// 0023: agente de reestruturação societária e visão de mercado (planejamento tributário), prompt v1.3.
+// 0023: agente de reestruturação societária e visão de mercado (planejamento tributário), prompt v1.4.
 // Criado no preview, nada publicado. Ferramentas somente leitura, com actAs user (regras de cada coleção valem).
 migrate(
   (app) => {
