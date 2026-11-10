@@ -4,8 +4,8 @@
 // e a leitura da situação atual/perfil a partir do SPED. Chaves só nos secrets do Skip, nunca no navegador.
 
 const RBX_URL = () =>
-  ($secrets.get('RECEITANETBX_URL') || 'http://127.0.0.1:8000').replace(/\/$/, '')
-const RBX_CHAVE = () => $secrets.get('RECEITANETBX_API_KEY') || ''
+  ($secrets.get('RECEITANETBOX_URL') || 'http://127.0.0.1:8000').replace(/\/$/, '')
+const RBX_CHAVE = () => $secrets.get('RECEITANETBOX_API_KEY') || ''
 /** Endereço do Skip para os links dos e-mails (secret opcional SITE_URL). */
 const SITE = () => ($secrets.get('SITE_URL') || '').replace(/\/$/, '')
 
@@ -56,7 +56,7 @@ function equipe(e) {
 
 /** A leitura do SPED depende dos secrets da API ReceitanetBX. */
 function rbxConfigurado() {
-  return !!$secrets.get('RECEITANETBX_URL') && !!$secrets.get('RECEITANETBX_API_KEY')
+  return !!$secrets.get('RECEITANETBOX_URL') && !!$secrets.get('RECEITANETBOX_API_KEY')
 }
 
 /** Empresas cadastradas neste sistema (coleção empresas, importada da planilha). */

@@ -43,7 +43,7 @@ routerAdd(
     if (!u.cnpjValido(cnpj)) return e.json(422, { erro: 'CNPJ inválido.' })
     if (!u.rbxConfigurado())
       return e.json(503, {
-        erro: 'Leitura do SPED indisponível: cadastre os secrets RECEITANETBX_URL e RECEITANETBX_API_KEY no Skip. Enquanto isso, preencha o perfil à mão.',
+        erro: 'Leitura do SPED indisponível: cadastre os secrets RECEITANETBOX_URL e RECEITANETBOX_API_KEY no Skip. Enquanto isso, preencha o perfil à mão.',
       })
     try {
       let empresa = null
