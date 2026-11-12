@@ -77,6 +77,10 @@ const APOIO: Item[] = [
     icone: BookOpen,
     ativo: (c) => c.startsWith(BASE + '/metodologia'),
   },
+]
+
+// "Usuários" só existe para o administrador geral.
+const APOIO_ADMIN: Item[] = [
   {
     rota: '/usuarios',
     rotulo: 'Usuários',
@@ -114,7 +118,7 @@ function MenuLateral({ aoNavegar }: { aoNavegar?: () => void }) {
       </NavLink>
     )
   }
-  const usuario = pb.authStore.record
+  const usuario = pb.authStore.record as (Record<string, unknown> & { admin?: boolean }) | null
   return (
     <div className="flex h-full flex-col px-3 py-5">
       <div className="mb-5 flex items-center gap-3 px-2">
@@ -147,6 +151,7 @@ function MenuLateral({ aoNavegar }: { aoNavegar?: () => void }) {
           Apoio
         </div>
         {APOIO.map(item)}
+        {usuario?.admin && APOIO_ADMIN.map(item)}
         <button
           type="button"
           onClick={sair}

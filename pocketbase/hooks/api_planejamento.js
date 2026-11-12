@@ -6324,56 +6324,8 @@ routerAdd('POST', '/backend/v1/pt/primeiro-acesso', (e) => {
   r.set('name', nome)
   r.setPassword(senha)
   r.setVerified(true)
+  r.set('admin', true)
+  r.set('ativo', true)
   $app.save(r)
   return e.json(200, { ok: true })
 })
-
-routerAdd(
-  'GET',
-  '/backend/v1/pt/usuarios',
-  (e) => {
-    const lista = $app.findRecordsByFilter('users', "id != ''", 'name', 0, 0)
-    return e.json(
-      200,
-      lista.map((r) => ({
-        id: r.id,
-        nome: r.getString('name'),
-        email: r.getString('email'),
-        criado: r.getString('created'),
-      })),
-    )
-  },
-  $apis.requireAuth(),
-)
-
-routerAdd(
-  'POST',
-  '/backend/v1/pt/usuarios',
-  (e) => {
-    let b = {}
-    try {
-      b = e.requestInfo().body || {}
-    } catch (err) {
-      b = {}
-    }
-    const nome = String(b.nome || '').trim()
-    const email = String(b.email || '')
-      .trim()
-      .toLowerCase()
-    const senha = String(b.senha || '')
-    if (!nome) return e.json(422, { erro: 'Informe o nome.' })
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return e.json(422, { erro: 'E-mail inválido.' })
-    if (senha.length < 8)
-      return e.json(422, { erro: 'A senha precisa ter pelo menos 8 caracteres.' })
-    if ($app.findRecordsByFilter('users', 'email = {:email}', '', 1, 0, { email: email }).length)
-      return e.json(409, { erro: 'Já existe um usuário com esse e-mail.' })
-    const r = new Record($app.findCollectionByNameOrId('users'))
-    r.set('email', email)
-    r.set('name', nome)
-    r.setPassword(senha)
-    r.setVerified(true)
-    $app.save(r)
-    return e.json(200, { ok: true, id: r.id })
-  },
-  $apis.requireAuth(),
-)

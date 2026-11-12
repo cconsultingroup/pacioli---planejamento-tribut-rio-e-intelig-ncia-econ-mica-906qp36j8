@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T22:12:12.142Z",
+  "generatedAt": "2026-11-12T20:25:02.993Z",
   "collections": [
     {
       "name": "users",
@@ -8,7 +8,7 @@
         "list": "id = @request.auth.id",
         "view": "id = @request.auth.id",
         "create": null,
-        "update": "id = @request.auth.id",
+        "update": "id = @request.auth.id && @request.body.admin:changed = false && @request.body.ativo:changed = false",
         "delete": "id = @request.auth.id"
       },
       "fields": [
@@ -29,19 +29,26 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate"
-          ]
+          "autodateTriggers": ["onCreate"]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate",
-            "onUpdate"
-          ]
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        },
+        {
+          "name": "admin",
+          "type": "bool",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "ativo",
+          "type": "bool",
+          "required": false,
+          "system": false
         }
       ],
       "indexes": [
@@ -77,20 +84,14 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": [
-            "ativa",
-            "inativa"
-          ]
+          "selectValues": ["ativa", "inativa"]
         },
         {
           "name": "procuracao",
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": [
-            "sim",
-            "nao"
-          ]
+          "selectValues": ["sim", "nao"]
         },
         {
           "name": "procuracao_validade",
@@ -116,31 +117,21 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate"
-          ]
+          "autodateTriggers": ["onCreate"]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate",
-            "onUpdate"
-          ]
+          "autodateTriggers": ["onCreate", "onUpdate"]
         },
         {
           "name": "regime_tributacao",
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": [
-            "simples_nacional",
-            "lucro_presumido",
-            "lucro_real",
-            "nao_informado"
-          ]
+          "selectValues": ["simples_nacional", "lucro_presumido", "lucro_real", "nao_informado"]
         },
         {
           "name": "vendedor_responsavel",
@@ -159,15 +150,10 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": [
-            "sim",
-            "nao"
-          ]
+          "selectValues": ["sim", "nao"]
         }
       ],
-      "indexes": [
-        "CREATE UNIQUE INDEX `idx_empresas_cnpj` ON `empresas` (cnpj) WHERE cnpj != ''"
-      ]
+      "indexes": ["CREATE UNIQUE INDEX `idx_empresas_cnpj` ON `empresas` (cnpj) WHERE cnpj != ''"]
     },
     {
       "name": "pt_planejamentos",
@@ -227,24 +213,17 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate"
-          ]
+          "autodateTriggers": ["onCreate"]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate",
-            "onUpdate"
-          ]
+          "autodateTriggers": ["onCreate", "onUpdate"]
         }
       ],
-      "indexes": [
-        "CREATE INDEX idx_pt_planejamentos_cnpj ON pt_planejamentos (cnpj)"
-      ]
+      "indexes": ["CREATE INDEX idx_pt_planejamentos_cnpj ON pt_planejamentos (cnpj)"]
     },
     {
       "name": "pt_inteligencia",
@@ -286,24 +265,17 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate"
-          ]
+          "autodateTriggers": ["onCreate"]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate",
-            "onUpdate"
-          ]
+          "autodateTriggers": ["onCreate", "onUpdate"]
         }
       ],
-      "indexes": [
-        "CREATE INDEX idx_pt_inteligencia_mes ON pt_inteligencia (mes)"
-      ]
+      "indexes": ["CREATE INDEX idx_pt_inteligencia_mes ON pt_inteligencia (mes)"]
     },
     {
       "name": "pt_estrategias_extra",
@@ -339,19 +311,14 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate"
-          ]
+          "autodateTriggers": ["onCreate"]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate",
-            "onUpdate"
-          ]
+          "autodateTriggers": ["onCreate", "onUpdate"]
         }
       ],
       "indexes": [
@@ -410,19 +377,14 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate"
-          ]
+          "autodateTriggers": ["onCreate"]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate",
-            "onUpdate"
-          ]
+          "autodateTriggers": ["onCreate", "onUpdate"]
         }
       ],
       "indexes": []
@@ -479,24 +441,17 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate"
-          ]
+          "autodateTriggers": ["onCreate"]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate",
-            "onUpdate"
-          ]
+          "autodateTriggers": ["onCreate", "onUpdate"]
         }
       ],
-      "indexes": [
-        "CREATE INDEX idx_pt_envios_created ON pt_envios (created)"
-      ]
+      "indexes": ["CREATE INDEX idx_pt_envios_created ON pt_envios (created)"]
     }
   ]
 }

@@ -44,7 +44,10 @@ export default function Login() {
       await pb.collection('users').authWithPassword(email.trim().toLowerCase(), senha)
       nav(destino, { replace: true })
     } catch (e) {
-      setErro(primeiro && e instanceof Error ? e.message : 'E-mail ou senha inválidos.')
+      const msg = e instanceof Error ? e.message : ''
+      setErro(
+        primeiro && msg ? msg : msg.includes('desativado') ? msg : 'E-mail ou senha inválidos.',
+      )
     } finally {
       setEnviando(false)
     }
