@@ -2,6 +2,7 @@
    Enquanto não existir nenhum usuário, a tela oferece o "primeiro acesso" para criar o seu. */
 import { useEffect, useState } from 'react'
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
+import { Eye, EyeOff } from 'lucide-react'
 import pb from '@/lib/pocketbase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,6 +14,7 @@ export default function Login() {
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [mostrarSenha, setMostrarSenha] = useState(false)
   const [erro, setErro] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [primeiro, setPrimeiro] = useState(false)
@@ -99,14 +101,27 @@ export default function Login() {
           </label>
           <label className="block space-y-1.5 text-sm font-medium">
             <span>{primeiro ? 'Senha (mínimo de 8 caracteres)' : 'Senha'}</span>
-            <Input
-              type="password"
-              autoComplete={primeiro ? 'new-password' : 'current-password'}
-              minLength={primeiro ? 8 : undefined}
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <Input
+                type={mostrarSenha ? 'text' : 'password'}
+                autoComplete={primeiro ? 'new-password' : 'current-password'}
+                minLength={primeiro ? 8 : undefined}
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                required
+                className="pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setMostrarSenha((v) => !v)}
+                aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+                title={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+                className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted-foreground outline-none transition-colors hover:text-foreground"
+                tabIndex={0}
+              >
+                {mostrarSenha ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
           </label>
           {erro && <p className="rounded-md bg-risco/10 px-3 py-2 text-sm text-risco">{erro}</p>}
           <Button type="submit" className="w-full" disabled={enviando}>
