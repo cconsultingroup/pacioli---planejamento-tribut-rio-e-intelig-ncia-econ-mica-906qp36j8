@@ -6,6 +6,7 @@ import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import Empresas from './pages/Empresas'
 import Login from './pages/Login'
+import RedefinirSenha from './pages/RedefinirSenha'
 import NotFound from './pages/NotFound'
 import Usuarios from './pages/Usuarios'
 import Layout from './components/Layout'
@@ -23,6 +24,7 @@ const App = () => (
       <Sonner />
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/redefinir-senha" element={<RedefinirSenha />} />
         <Route element={<Layout />}>
           <Route path="/" element={<Navigate to="/planejamento-tributario" replace />} />
           <Route path="/planejamento-tributario/*" element={<PlanejamentoTributario />} />

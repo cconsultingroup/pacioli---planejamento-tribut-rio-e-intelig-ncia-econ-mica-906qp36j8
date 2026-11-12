@@ -7,6 +7,7 @@ import pb from '@/lib/pocketbase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import logo from '@/planejamento/assets/logo-consulting.png'
+import EsqueciSenhaDialog from '@/components/EsqueciSenhaDialog'
 
 export default function Login() {
   const nav = useNavigate()
@@ -15,6 +16,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [mostrarSenha, setMostrarSenha] = useState(false)
+  const [esqueciAberto, setEsqueciAberto] = useState(false)
   const [erro, setErro] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [primeiro, setPrimeiro] = useState(false)
@@ -127,10 +129,28 @@ export default function Login() {
           <Button type="submit" className="w-full" disabled={enviando}>
             {enviando ? 'Aguarde…' : primeiro ? 'Criar acesso e entrar' : 'Entrar'}
           </Button>
+          {!primeiro && (
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => setEsqueciAberto(true)}
+                className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+              >
+                Esqueci minha senha
+              </button>
+            </div>
+          )}
           <p className="border-t pt-2 text-center text-xs text-muted-foreground">
             Acesso exclusivo da equipe C Consulting Group
           </p>
         </form>
+        {!primeiro && (
+          <EsqueciSenhaDialog
+            aberto={esqueciAberto}
+            onAbertoChange={setEsqueciAberto}
+            emailInicial={email}
+          />
+        )}
       </div>
     </main>
   )
