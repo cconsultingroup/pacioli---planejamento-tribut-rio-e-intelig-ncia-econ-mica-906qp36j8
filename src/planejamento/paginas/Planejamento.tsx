@@ -5,6 +5,7 @@ import { Button } from '@/planejamento/ui/button'
 import { Skeleton } from '@/planejamento/ui/skeleton'
 import { Aviso, classeSelect, cnpjFmt, useManual } from '@/planejamento/components/comuns'
 import { AbaPerfil } from '@/planejamento/components/plan/aba-perfil'
+import { AbaServidor } from '@/planejamento/components/plan/aba-servidor'
 import { AbaRegimes } from '@/planejamento/components/plan/aba-regimes'
 import { AbaEstrategias } from '@/planejamento/components/plan/aba-estrategias'
 import { AbaDossie } from '@/planejamento/components/plan/aba-dossie'
@@ -26,6 +27,7 @@ const ABAS: [string, string][] = [
   ['projecao', '5. Projeção 2026–2033'],
   ['plano', '6. Plano de implementação'],
   ['relatorios', '7. Relatórios e respostas'],
+  ['servidor', '8. Servidor ReceitanetBX'],
 ]
 
 export type Alterar = (f: (p: Planejamento) => Planejamento) => void
@@ -188,7 +190,13 @@ export default function PaginaPlanejamento() {
         ))}
       </nav>
 
-      {aba === 'perfil' && <AbaPerfil pl={pl} alterar={alterar} />}
+      {aba === 'perfil' && (
+        <>
+          <AbaPerfil pl={pl} alterar={alterar} />
+          <AbaServidor pl={pl} />
+        </>
+      )}
+      {aba === 'servidor' && <AbaServidor pl={pl} />}
       {aba === 'regimes' && (
         <AbaRegimes pl={pl} mapa={mapa} alterar={alterar} abrir={(n) => ir(`estrategia-${n}`)} />
       )}
